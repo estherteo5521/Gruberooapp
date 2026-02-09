@@ -1,7 +1,12 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\User\\source\\repos\\Gruberooapp1\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{DD0F63C7-E34D-996B-301B-BB8D6F692B20}|Gruberooapp.csproj|c:\\users\\user\\source\\repos\\gruberooapp1\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DD0F63C7-E34D-996B-301B-BB8D6F692B20}|Gruberooapp.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -9,7 +14,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": -1,
+          "SelectedChildIndex": 7,
           "Children": [
             {
               "$type": "Bookmark",
@@ -38,6 +43,19 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{1c64b9c2-e352-428e-a56d-0ace190b99a6}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "program.cs",
+              "DocumentMoniker": "C:\\Users\\User\\source\\repos\\Gruberooapp1\\program.cs",
+              "RelativeDocumentMoniker": "program.cs",
+              "ToolTip": "C:\\Users\\User\\source\\repos\\Gruberooapp1\\program.cs",
+              "RelativeToolTip": "program.cs",
+              "ViewState": "AgIAAHgBAAAAAAAAAADwvwAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-09T10:58:51.743Z",
+              "EditorCaption": ""
             }
           ]
         }
