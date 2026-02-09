@@ -111,11 +111,16 @@ namespace Gruberoo
                 int id = int.Parse(data[0]);
                 string email = data[1];
                 string restId = data[2];
+                string deliverydate = data[3] + " " + data[4];
+                DateTime deliverydatetime = DateTime.Parse(deliverydate);
+                string adddress = data[5];
+                DateTime orderdatetime = DateTime.Parse(data[6]);
                 double total = double.Parse(data[7]); 
-                string status = data[8];            
+                string status = data[8];
+                bool orderPaid = true;
                 
                 //create order object
-                Order newOrder = new Order(id, DateTime.Now, total, status);
+                Order newOrder = new Order (id,orderdatetime,total,status,deliverydatetime,adddress,status,orderPaid);
                 orderList.Add(newOrder);
 
                 //link to customersList
