@@ -20,7 +20,7 @@ namespace Gruberoo
             LoadRestaurants();
             LoadFoodItems();
             LoadCustomers(customersList);
-            LoadOrders(orderList,customersList,restaurants);
+            LoadOrders(orderList, customersList, restaurants);
 
 
             Console.WriteLine("Welcome to the Gruberoo Food Delivery System");
@@ -28,9 +28,9 @@ namespace Gruberoo
             Console.WriteLine($"{foodItemNumber} food items loaded!");
             Console.WriteLine($"{customersList.Count} customers loaded!");
             Console.WriteLine($"{orderList.Count} orders loaded!");
-            
 
-            ShowMenu(); 
+
+            ShowMenu();
         }
 
         //==========================================================
@@ -115,12 +115,12 @@ namespace Gruberoo
                 DateTime deliverydatetime = DateTime.Parse(deliverydate);
                 string adddress = data[5];
                 DateTime orderdatetime = DateTime.Parse(data[6]);
-                double total = double.Parse(data[7]); 
+                double total = double.Parse(data[7]);
                 string status = data[8];
                 bool orderPaid = true;
-                
+
                 //create order object
-                Order newOrder = new Order (id,orderdatetime,total,status,deliverydatetime,adddress,status,orderPaid);
+                Order newOrder = new Order(id, orderdatetime, total, status, deliverydatetime, adddress, status, orderPaid);
                 orderList.Add(newOrder);
 
                 //link to customersList
@@ -132,7 +132,7 @@ namespace Gruberoo
                         break;
                     }
                 }
-                
+
                 //link to restaurantqueue
                 foreach (Restaurant rest in restaurants)
                 {
@@ -171,19 +171,19 @@ namespace Gruberoo
                 switch (choice)
                 {
                     case "1":
-                        //ListAllRestaurantsAndMenu();
+                        //ListAllRestaurantAndMenu(List<Restaurant> restaurants);
                         break;
                     case "2":
                         //ListAllOrders();
                         break;
                     case "3":
-                        // CreateNewOrder();
+                        //CreateNewOrder(List < Customer > customerList, List < Restaurant > restaurantlist);
                         break;
                     case "4":
                         // ProcessOrders();
                         break;
                     case "5":
-                        //ModifyOrder();
+                        //ModifyOrder(List<Customer> customerList, List<Restaurant> restaurantList);
                         break;
                     case "6":
                         // Delete order
@@ -194,6 +194,165 @@ namespace Gruberoo
                         break;
                 }
             }
+        }
+
+        static void ListAllRestaurantAndMenu(List<Restaurant> restaurants)
+        {
+            Console.WriteLine("All Restaurants and Menu Items");
+            Console.WriteLine("============================== ");
+            foreach (var res in restaurants)
+            {
+                Console.WriteLine($"Restaurant: {res.RestaurantName} ({res.RestaurantId})");
+                res.DisplayMenu();
+            }
+        }
+
+        static void CreateNewOrder(List<Customer> customerList,List<Restaurant> restaurantlist)
+        {
+            Console.WriteLine("Create New Order");
+            Console.WriteLine("================ ");
+
+            Console.WriteLine("Enter Customer Email:");
+            string email = Console.ReadLine();
+            Customer customer = customerList .Find(c => c.emailAddress == email);
+            if (customer == null)
+            {
+                Console.WriteLine("Customer not found.");
+                return;
+            }
+
+            Console.WriteLine("Enter Restaurant ID:");
+            string resId = Console.ReadLine();
+            Restaurant restaurant = restaurantlist.Find(r => r.RestaurantId == resId);
+
+            Console.WriteLine("Enter Delivery Date (dd/mm/yyyy):");
+            string dateinput = Console.ReadLine();
+
+            Console.WriteLine("Enter Delivery Time (hh:mm)");
+            string timeinput = Console.ReadLine();
+            DateTime deliverydatetime = DateTime.Parse(dateinput + " " + timeinput);
+
+            Console.WriteLine("Enter Delivery Address:");
+            string address = Console.ReadLine();
+
+            Console.WriteLine("\nAvaibale Food Items:");
+            int i = 0;
+            foreach ( i < restaurant.Menu.Count; i++)
+            {
+                var item = restaurant.Menu[i];
+                Console.WriteLine($"{i + 1}. {item.itemName}: {item.itemDesc} - ${item.itemPrice:F2}");
+            }
+
+            double subtotal = 0;
+            List<OrderFoodItem> selecteditem = new List<OrderFoodItem>();
+
+            while (true)
+            {
+                Console.WriteLine("Enter item number (0 to finish):");
+                int choice = int.Parse(Console.ReadLine());
+                if (choice == 0) break;
+
+                Console.WriteLine("Enter quantity:");
+                int quantity = int.Parse(Console.ReadLine());
+
+                FoodItem chosen = restaurant.Menu[choice - 1];
+                OrderFoodItem ordered = new OrderFoodItem(chosen,quantity);
+                selecteditem.Add(ordered);
+
+                subtotal += ordered.CalculateSubtotal();
+            }
+
+            double totalwithfee = subtotal + 5.00;
+            Console.WriteLine($"\nOrder Total: ${subtotal:F2} + $5.00 (delivery) = ${totalwithfee:F2}}");
+
+            Console.WriteLine("Proceed to payment? [Y/N]");
+            string proceed = Console.ReadLine().ToUpper();
+            if (proceed == "Y")
+            {
+                Console.WriteLine("[CC] Credit Card / [CD] Cash on Delivery:");
+                string method = Console.ReadLine().ToUpper();
+
+                int newID = 0427;
+                Order neworder = new Order(newID, DateTime.Now, totalwithfee, "Pending", deliverydatetime, address, method, true);
+
+                foreach (var item in selecteditem) neworder.AddOrderedFoodItem(item);
+
+                customer.AddOrder(neworder);
+                restaurant.OrderQueue.Enqueue(neworder);
+
+                Console.WriteLine($"Order {newID} created successfully! Status: Pending");
+            }
+        }
+
+        static void ModifyOrder(List<Customer> customerList, List<Restaurant> restaurantList)
+        {
+            Console.WriteLine("Modify Order");
+            Console.WriteLine("============ ");
+
+            Console.WriteLine("Enter Customer Email:");
+            string custemail = Console.ReadLine();
+            Customer customer = customersList.Find(c => c.emailAddress == custemail);
+            if (customer == null)
+            {
+                Console.WriteLine("Customer not found.");
+                return;
+            }
+
+            Console.WriteLine("Pending Orders:");
+            bool pending = false;
+            foreach (Order o in customer.orderList)
+            {
+                if (o.OrderStatus == "Pending")
+                {
+                    Console.WriteLine(o.OrderId);
+                    pending = true;
+                }
+            }
+            if (!pending)
+            {
+                Console.WriteLine("No pending orders found.");
+                return;
+            }
+
+            Console.WriteLine("Enter Order ID:");
+            int orderid = int.Parse(Console.ReadLine());
+            Order order = customer.orderList.Find(o => o.OrderId == orderid && o.OrderStatus == "Pending");
+            if (order == null)
+            {
+                Console.WriteLine("Invalid Order ID / Order not pending.");
+                return;
+            }
+
+            Console.WriteLine("Order Items:");
+            order.DisplayOrderedFoodItem();
+
+            Console.WriteLine($"Address: {order.DeliveryAddress}");
+            Console.WriteLine($"Delivery Date/Time: {order.DeliveryDateTime:dd/MM/yyyy, HH:mm}");
+
+            Console.WriteLine("Modify: [1] Items [2] Address [3] Delivery Time: ");
+            string choice = Console.ReadLine();
+
+            if (choice == "1")
+            {
+                ModifyOrder(order, restaurantList);
+            }
+            else if (choice == "2")
+            {
+                Console.WriteLine("Enter new Delivery Address: ");
+                order.DeliveryAddress = Console.ReadLine();
+                Console.WriteLine($"Order {order.OrderId} updated. New address: {order.DeliveryAddress}");
+            }
+            else if (choice == "3")
+            {
+                Console.WriteLine("Enter new Delivery Time (hh:mm):");
+                string newtime = Console.ReadLine();
+                DateTime current = order.DeliveryDateTime;
+                TimeSpan time = TimeSpan.Parse(newtime);
+                order.DeliveryDateTime = current.Date + time;
+            }
+
+            Console.WriteLine($"Order {order.OrderId} updated. New Delivery Time:{newtime}");
+
         }
     }
 }
