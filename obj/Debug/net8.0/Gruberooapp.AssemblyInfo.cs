@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Gruberooapp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9a2ff35d11d63ff083c88a4e438b4fcedb1b6b98")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6f3d5051e69fcbb8a5a0feedb5be54f5deeae841")]
 [assembly: System.Reflection.AssemblyProductAttribute("Gruberooapp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Gruberooapp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
