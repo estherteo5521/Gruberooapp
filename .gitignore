@@ -4,3 +4,9 @@
 
 /.vs
 /obj
+/obj/Debug/net8.0/Gruberooapp.GeneratedMSBuildEditorConfig.editorconfig
+/obj/Debug/net8.0/Gruberooapp.AssemblyInfo.cs
+/obj/Debug/net8.0/Gruberooapp.AssemblyInfoInputs.cache
+/obj/Release/net8.0/Gruberooapp.AssemblyInfo.cs
+/obj/Release/net8.0/Gruberooapp.AssemblyInfoInputs.cache
+/obj/Release/net8.0/Gruberooapp.GeneratedMSBuildEditorConfig.editorconfig
