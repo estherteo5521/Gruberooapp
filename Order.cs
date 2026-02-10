@@ -18,7 +18,7 @@ namespace Gruberooapp
         private double orderTotal;
         private string orderStatus;
         private DateTime orderDateTime; 
-        private DateTime deliveryDateTime;
+        private DateTime deliverydatetime;
         private string deliveryAddress;
         private string orderPaymentMethod;
         private bool orderPaid;
@@ -58,6 +58,12 @@ namespace Gruberooapp
             get { return orderPaid; }
             set { orderPaid = value; }
         }
+
+        public DateTime deliveryDateTime
+        {
+            get { return deliverydatetime; }
+            set { deliverydatetime = value; }
+        }
         
         //constructor
         public Order(int id, DateTime date, double total, string status, DateTime deliverydate, string address, string paymentmethod, bool orderpaid)
@@ -69,7 +75,7 @@ namespace Gruberooapp
             deliveryAddress = address;
             orderPaymentMethod = paymentmethod;
             orderPaid = orderpaid;
-            deliveryDateTime = deliverydate;
+            deliverydatetime = deliverydate;
         }
 
         //list for orderedfoooditems
