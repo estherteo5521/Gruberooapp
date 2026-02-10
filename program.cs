@@ -470,7 +470,7 @@ namespace Gruberooapp
                     default:
                         break;
                 }
-            }l]\ rhwj
+            }
         }
     }
 }
