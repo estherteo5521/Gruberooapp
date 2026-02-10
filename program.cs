@@ -98,7 +98,7 @@ namespace Gruberooapp
             {
                 string[] data = customerLines[i].Split(',');
                 Customer c = new Customer(data[0].Trim(), data[1].Trim());
-                customerList.Add(c);
+                customersList.Add(c);
             }
         }
 
@@ -692,7 +692,7 @@ namespace Gruberooapp
 
             Console.WriteLine("Pending Orders:");
             bool pending = false;
-            foreach (Order o in customer.orderlist)
+            foreach (Order o in customer.orderList)
             {
                 if (o.OrderStatus == "Pending")
                 {
@@ -708,7 +708,7 @@ namespace Gruberooapp
 
             Console.WriteLine("Enter Order ID:");
             int orderid = int.Parse(Console.ReadLine());
-            Order order = customer.orderlist.Find(o => o.OrderId == orderid && o.OrderStatus == "Pending");
+            Order order = customer.orderList.Find(o => o.OrderId == orderid && o.OrderStatus == "Pending");
             if (order == null)
             {
                 Console.WriteLine("Invalid Order ID / Order not pending.");
@@ -719,10 +719,9 @@ namespace Gruberooapp
             //order.DisplayOrderedFoodItem();
 
             Console.WriteLine($"Address: {order.DeliveryAddress}");
-            Console.WriteLine($"Delivery Date/Time: {order.deliveryDateTime:dd/MM/yyyy, HH:mm}");
+            Console.WriteLine($"Delivery Date/Time: {order.DeliveryDateTime:dd/MM/yyyy, HH:mm}");
 
             Console.WriteLine("Modify: [1] Items [2] Address [3] Delivery Time: ");
-            Console.WriteLine();
             string choice = Console.ReadLine();
 
             if (choice == "1")
@@ -739,9 +738,9 @@ namespace Gruberooapp
             {
                 Console.WriteLine("Enter new Delivery Time (hh:mm):");
                 string newtime = Console.ReadLine();
-                DateTime current = order.deliveryDateTime;
+                DateTime current = order.DeliveryDateTime;
                 TimeSpan time = TimeSpan.Parse(newtime);
-                order.deliveryDateTime = current.Date + time;
+                order.DeliveryDateTime = current.Date + time;
                 Console.WriteLine($"Order {order.OrderId} updated. New Delivery Time:{newtime}");
             }
 
