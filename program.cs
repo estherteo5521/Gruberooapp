@@ -7,7 +7,7 @@ using System.Reflection.Metadata.Ecma335;
 using System.Text.RegularExpressions;
 
 
-namespace Gruberoo
+namespace GruberooApp
 {
     class Program
     {
@@ -377,7 +377,7 @@ namespace Gruberoo
         // Student Name : Yap Jia Xuan 
         // Partner Name : Esther Teo Hui Min
         //==========================================================
-        static void ModifyOrder(List<Customer> customerList,List<Order> orderList)
+        static void ModifyOrder(List<Customer> customerList, List<Order> orderList)
         {
             Console.WriteLine("Modify Order");
             Console.WriteLine("============ ");
@@ -417,7 +417,7 @@ namespace Gruberoo
             }
 
             Console.WriteLine("Order Items:");
-            //order.DisplayOrderedFoodItem();
+            
 
             Console.WriteLine($"Address: {order.DeliveryAddress}");
             Console.WriteLine($"Delivery Date/Time: {order.deliveryDateTime:dd/MM/yyyy, HH:mm}");
@@ -428,7 +428,7 @@ namespace Gruberoo
 
             if (choice == "1")
             {
-                ModifyOrder(customerList,orderList);
+                ModifyOrder(customerList, orderList);
             }
             else if (choice == "2")
             {
@@ -445,8 +445,6 @@ namespace Gruberoo
                 order.deliveryDateTime = current.Date + time;
                 Console.WriteLine($"Order {order.OrderId} updated. New Delivery Time:{newtime}");
             }
-
-            //Console.WriteLine($"Order {order.OrderId} updated. New Delivery Time:{newtime}");
 
         }
     }
