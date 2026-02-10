@@ -465,6 +465,7 @@ namespace Gruberooapp
                         DeleteOrder();
                         break;
                     case "0":
+                        Console.WriteLine("Goodbye!");
                         return;
                     default:
                         break;
