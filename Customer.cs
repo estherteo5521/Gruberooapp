@@ -16,6 +16,7 @@ namespace Gruberooapp
         //public propeties
         public string emailAddress {  get; set; }
         public string customerName { get; set; }
+        
 
         //create list for orderlist
         public List<Order> orderList { get; set; } = new List<Order>();
@@ -29,18 +30,18 @@ namespace Gruberooapp
         //method
         public void AddOrder(Order order)
         {
-            orderList.Add (order);
+            orderlist.Add (order);
         }
         public void DisplayAllOrders()
         {
             Console.WriteLine($"Order History for:{customerName} ({emailAddress})");
-            if (orderList.Count == 0)
+            if (orderlist.Count == 0)
             {
                 Console.WriteLine("No orders found for this customer.");
             }
             else
             {
-                foreach (Order order in orderList)
+                foreach (Order order in orderlist)
                 {
                     Console.WriteLine(order.ToString());
                     order.DisplayOrderedFoodItem();
@@ -54,7 +55,7 @@ namespace Gruberooapp
             {
                 return false;
             }
-            bool removed = orderList.Remove(order);
+            bool removed = orderlist.Remove(order);
             return removed;
         }
         public override string ToString()
