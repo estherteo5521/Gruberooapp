@@ -30,18 +30,18 @@ namespace Gruberooapp
         //method
         public void AddOrder(Order order)
         {
-            orderlist.Add (order);
+            orderList.Add (order);
         }
         public void DisplayAllOrders()
         {
             Console.WriteLine($"Order History for:{customerName} ({emailAddress})");
-            if (orderlist.Count == 0)
+            if (orderList.Count == 0)
             {
                 Console.WriteLine("No orders found for this customer.");
             }
             else
             {
-                foreach (Order order in orderlist)
+                foreach (Order order in orderList)
                 {
                     Console.WriteLine(order.ToString());
                     order.DisplayOrderedFoodItem();
@@ -55,7 +55,7 @@ namespace Gruberooapp
             {
                 return false;
             }
-            bool removed = orderlist.Remove(order);
+            bool removed = orderList.Remove(order);
             return removed;
         }
         public override string ToString()
