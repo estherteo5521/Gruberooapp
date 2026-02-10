@@ -108,6 +108,7 @@ namespace Gruberoo
             for (int i = 1; i < lines.Length; i++)
             {
                 string[] data = lines[i].Split(',');
+
                 int id = int.Parse(data[0]);
                 string email = data[1];
                 string restId = data[2];
@@ -118,9 +119,10 @@ namespace Gruberoo
                 double total = double.Parse(data[7]);
                 string status = data[8];
                 bool orderPaid = true;
+                string paymentmethod = "Credit Card";
 
                 //create order object
-                Order newOrder = new Order(id, orderdatetime, total, status, deliverydatetime, adddress, status, orderPaid);
+                Order newOrder = new Order(id, orderdatetime, total, status, deliverydatetime, adddress, paymentmethod, orderPaid);
                 orderList.Add(newOrder);
 
                 //link to customersList
@@ -171,19 +173,19 @@ namespace Gruberoo
                 switch (choice)
                 {
                     case "1":
-                        //ListAllRestaurantAndMenu(List<Restaurant> restaurants);
+                        ListAllRestaurantAndMenu(restaurants);
                         break;
                     case "2":
                         //ListAllOrders();
                         break;
                     case "3":
-                        //CreateNewOrder(List < Customer > customerList, List < Restaurant > restaurantlist);
+                        //CreateNewOrder(customerList,restaurantlist);
                         break;
                     case "4":
                         // ProcessOrders();
                         break;
                     case "5":
-                        //ModifyOrder(List<Customer> customerList, List<Restaurant> restaurantList);
+                        //ModifyOrder(customerList,restaurantList);
                         break;
                     case "6":
                         // Delete order
@@ -195,7 +197,11 @@ namespace Gruberoo
                 }
             }
         }
-
+        //========================================================== 
+        // Student Number : S10272963E
+        // Student Name : Yap Jia Xuan 
+        // Partner Name : Esther Teo Hui Min
+        //==========================================================
         static void ListAllRestaurantAndMenu(List<Restaurant> restaurants)
         {
             Console.WriteLine("All Restaurants and Menu Items");
@@ -206,7 +212,11 @@ namespace Gruberoo
                 res.DisplayMenu();
             }
         }
-
+        //========================================================== 
+        // Student Number : S10272963E
+        // Student Name : Yap Jia Xuan 
+        // Partner Name : Esther Teo Hui Min
+        //==========================================================
         static void CreateNewOrder(List<Customer> customerList,List<Restaurant> restaurantlist)
         {
             Console.WriteLine("Create New Order");
@@ -237,7 +247,7 @@ namespace Gruberoo
 
             Console.WriteLine("\nAvaibale Food Items:");
             int i = 0;
-            foreach ( i < restaurant.Menu.Count; i++)
+            foreach (i < restaurant.Menu.Count; i++)
             {
                 var item = restaurant.Menu[i];
                 Console.WriteLine($"{i + 1}. {item.itemName}: {item.itemDesc} - ${item.itemPrice:F2}");
@@ -256,14 +266,14 @@ namespace Gruberoo
                 int quantity = int.Parse(Console.ReadLine());
 
                 FoodItem chosen = restaurant.Menu[choice - 1];
-                OrderFoodItem ordered = new OrderFoodItem(chosen,quantity);
+                OrderFoodItem ordered = new OrderFoodItem(chosen, quantity);
                 selecteditem.Add(ordered);
 
                 subtotal += ordered.CalculateSubtotal();
             }
 
             double totalwithfee = subtotal + 5.00;
-            Console.WriteLine($"\nOrder Total: ${subtotal:F2} + $5.00 (delivery) = ${totalwithfee:F2}}");
+            Console.WriteLine($"\nOrder Total: ${subtotal:F2} + $5.00 (delivery) = ${totalwithfee:F2}");
 
             Console.WriteLine("Proceed to payment? [Y/N]");
             string proceed = Console.ReadLine().ToUpper();
@@ -275,7 +285,10 @@ namespace Gruberoo
                 int newID = 0427;
                 Order neworder = new Order(newID, DateTime.Now, totalwithfee, "Pending", deliverydatetime, address, method, true);
 
-                foreach (var item in selecteditem) neworder.AddOrderedFoodItem(item);
+                foreach (var item in selecteditem)
+                {
+                    neworder.AddOrderedFoodItem(item);
+                }
 
                 customer.AddOrder(neworder);
                 restaurant.OrderQueue.Enqueue(neworder);
@@ -283,8 +296,12 @@ namespace Gruberoo
                 Console.WriteLine($"Order {newID} created successfully! Status: Pending");
             }
         }
-
-        static void ModifyOrder(List<Customer> customerList, List<Restaurant> restaurantList)
+        //========================================================== 
+        // Student Number : S10272963E
+        // Student Name : Yap Jia Xuan 
+        // Partner Name : Esther Teo Hui Min
+        //==========================================================
+        static void ModifyOrder(List<Customer> customerList, List<Restaurant> restaurantList,List<Order> orders)
         {
             Console.WriteLine("Modify Order");
             Console.WriteLine("============ ");
@@ -327,14 +344,14 @@ namespace Gruberoo
             order.DisplayOrderedFoodItem();
 
             Console.WriteLine($"Address: {order.DeliveryAddress}");
-            Console.WriteLine($"Delivery Date/Time: {order.DeliveryDateTime:dd/MM/yyyy, HH:mm}");
+            Console.WriteLine($"Delivery Date/Time: {order.deliveryDateTime:dd/MM/yyyy, HH:mm}");
 
             Console.WriteLine("Modify: [1] Items [2] Address [3] Delivery Time: ");
             string choice = Console.ReadLine();
 
             if (choice == "1")
             {
-                ModifyOrder(order, restaurantList);
+                ModifyOrder(customerList,restaurantList,orders);
             }
             else if (choice == "2")
             {
@@ -346,12 +363,13 @@ namespace Gruberoo
             {
                 Console.WriteLine("Enter new Delivery Time (hh:mm):");
                 string newtime = Console.ReadLine();
-                DateTime current = order.DeliveryDateTime;
+                DateTime current = order.deliveryDateTime;
                 TimeSpan time = TimeSpan.Parse(newtime);
-                order.DeliveryDateTime = current.Date + time;
+                order.deliveryDateTime = current.Date + time;
+                Console.WriteLine($"Order {order.OrderId} updated. New Delivery Time:{newtime}");
             }
 
-            Console.WriteLine($"Order {order.OrderId} updated. New Delivery Time:{newtime}");
+            //Console.WriteLine($"Order {order.OrderId} updated. New Delivery Time:{newtime}");
 
         }
     }
