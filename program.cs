@@ -14,6 +14,7 @@ namespace Gruberooapp
         static List<Customer> customersList = new();
         static List<Order> orderList = new();
         static int foodItemNumber = 0;
+        static Stack<Order> refundStack = new Stack<Order>();
 
         static void Main()
         {
@@ -21,6 +22,7 @@ namespace Gruberooapp
             LoadFoodItems();
             LoadCustomers(customersList);
             LoadOrders(orderList,customersList,restaurants);
+
 
 
             Console.WriteLine("Welcome to the Gruberoo Food Delivery System");
@@ -334,6 +336,120 @@ namespace Gruberooapp
         // Student Name : Esther Teo
         // Partner Name : Yap Jia Xuan 
         //==========================================================
+
+        static void DeleteOrder()
+        {
+            Console.WriteLine("\nDelete Order");
+            Console.WriteLine("============");
+
+            // Prompt for customer email
+            Console.Write("Enter Customer Email: ");
+            string email = Console.ReadLine().Trim();
+
+            // Find customer
+            Customer customer = null;
+            foreach (Customer c in customersList)
+            {
+                if (c.emailAddress.Equals(email, StringComparison.OrdinalIgnoreCase))
+                {
+                    customer = c;
+                    break;
+                }
+            }
+
+            if (customer == null)
+            {
+                Console.WriteLine("Customer not found.");
+                return;
+            }
+
+            // Display all pending orders for this customer
+            List<Order> pendingOrders = new List<Order>();
+            foreach (Order order in customer.orderList)
+            {
+                if (order.OrderStatus.Equals("Pending", StringComparison.OrdinalIgnoreCase))
+                {
+                    pendingOrders.Add(order);
+                }
+            }
+
+            if (pendingOrders.Count == 0)
+            {
+                Console.WriteLine("No pending orders found for this customer.");
+                return;
+            }
+
+            Console.Write("Pending Orders: ");
+            foreach (Order order in pendingOrders)
+            {
+                Console.Write(order.OrderId + " ");
+            }
+            Console.WriteLine();
+
+            // Prompt for Order ID
+            Console.Write("Enter Order ID: ");
+            int orderId;
+            if (!int.TryParse(Console.ReadLine(), out orderId))
+            {
+                Console.WriteLine("Invalid Order ID.");
+                return;
+            }
+
+            // Find the order
+            Order selectedOrder = null;
+            foreach (Order order in pendingOrders)
+            {
+                if (order.OrderId == orderId)
+                {
+                    selectedOrder = order;
+                    break;
+                }
+            }
+
+            if (selectedOrder == null)
+            {
+                Console.WriteLine("Order ID not found in pending orders.");
+                return;
+            }
+
+            // Display order details
+            Console.WriteLine($"Customer: {customer.customerName}");
+            Console.WriteLine("Ordered Items:");
+            int itemNumber = 1;
+            foreach (string item in selectedOrder.orderedfooditem)
+            {
+                Console.WriteLine($"{itemNumber}. {item}");
+                itemNumber++;
+            }
+            Console.WriteLine($"Delivery date/time: {selectedOrder.DeliveryDateTime:dd/MM/yyyy HH:mm}");
+            Console.WriteLine($"Total Amount: ${selectedOrder.OrderTotal:F2}");
+            Console.WriteLine($"Order Status: {selectedOrder.OrderStatus}");
+
+            // Confirm deletion
+            Console.Write("Confirm deletion? [Y/N]: ");
+            string confirmation = Console.ReadLine().Trim().ToUpper();
+
+            if (confirmation == "Y")
+            {
+                // Update status to Cancelled
+                selectedOrder.OrderStatus = "Cancelled";
+
+                // Add to refund stack (assuming you have a refundStack variable)
+                refundStack.Push(selectedOrder);
+
+                Console.WriteLine($"Order {selectedOrder.OrderId} cancelled. Refund of ${selectedOrder.OrderTotal:F2} processed.");
+            }
+            else
+            {
+                Console.WriteLine("Order deletion cancelled.");
+            }
+        }
+
+        //==========================================================
+        // Student Number : S10275496C
+        // Student Name : Esther Teo
+        // Partner Name : Yap Jia Xuan 
+        //==========================================================
         // ================= MENU =================
         static void ShowMenu()
         {
@@ -370,7 +486,7 @@ namespace Gruberooapp
                         //ModifyOrder();
                         break;
                     case "6":
-                        // Delete order
+                        DeleteOrder();
                         break;
                     case "0":
                         return;
