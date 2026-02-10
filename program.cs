@@ -405,7 +405,7 @@ namespace Gruberooapp
                 return;
             }
 
-            // Display order details
+            
             Console.WriteLine($"Customer: {customer.customerName}");
             Console.WriteLine("Ordered Items:");
             int itemNumber = 1;
