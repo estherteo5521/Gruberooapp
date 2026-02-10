@@ -210,135 +210,15 @@ namespace Gruberooapp
         // Student Name : Esther Teo
         // Partner Name : Yap Jia Xuan 
         //==========================================================
-        //static void ProcessOrders()
-        //{
-        //    Console.Write("Enter Restaurant ID: ");
-        //    string restId = Console.ReadLine();
-
-        //    // Find restaurant
-        //    Restaurant restaurant = restaurants.FirstOrDefault(r => r.RestaurantId == restId);
-        //    if (restaurant == null)
-        //    {
-        //        Console.WriteLine("Restaurant not found.");
-        //        return;
-        //    }
-
-        //    if (restaurant.OrderQueue.Count == 0)
-        //    {
-        //        Console.WriteLine("No orders in queue for this restaurant.");
-        //        return;
-        //    }
-
-        //    // Refund stack
-        //    Stack<Order> refundStack = new Stack<Order>();
-
-        //    // Temporary queue to loop through orders
-        //    Queue<Order> tempQueue = new Queue<Order>(restaurant.OrderQueue);
-
-        //    while (tempQueue.Count > 0)
-        //    {
-        //        Order order = tempQueue.Dequeue();
-
-        //        // Ensure the order is Pending (student version)
-        //        if (string.IsNullOrEmpty(order.OrderStatus))
-        //        {
-        //            order.OrderStatus = "Pending";
-        //        }
-
-        //        // Find customer
-        //        string customerName = "Unknown";
-        //        foreach (var c in customersList)
-        //        {
-        //            if (c.orderList.Contains(order))
-        //            {
-        //                customerName = c.customerName;
-        //                break;
-        //            }
-        //        }
-
-        //        // Display order info
-        //        Console.WriteLine($"\nOrder {order.OrderId}:");
-        //        Console.WriteLine($"Customer: {customerName}");
-        //        Console.WriteLine("Ordered Items:");
-        //        for (int i = 0; i < order.orderedfooditem.Count; i++)
-        //        {
-        //            Console.WriteLine($"{i + 1}. {order.orderedfooditem[i]}");
-        //        }
-
-        //        DateTime deliveryTime = DateTime.Now; 
-        //        Console.WriteLine($"Delivery date/time: {deliveryTime:dd/MM/yyyy HH:mm}");
-        //        Console.WriteLine($"Total Amount: {order.CalculateOrderTotal():C}");
-        //        Console.WriteLine($"Order Status: {order.OrderStatus}");
-
-        //        Console.Write("Enter [C]onfirm / [R]eject / [S]kip / [D]eliver: ");
-        //        string choice = Console.ReadLine().ToUpper();
-
-        //        switch (choice)
-        //        {
-        //            case "C":
-        //                if (order.OrderStatus == "Pending")
-        //                {
-        //                    order.OrderStatus = "Preparing";
-        //                    Console.WriteLine($"Order {order.OrderId} confirmed. Status: {order.OrderStatus}");
-        //                }
-        //                else
-        //                {
-        //                    Console.WriteLine("Cannot confirm. Order is not pending.");
-        //                }
-        //                break;
-
-        //            case "R":
-        //                if (order.OrderStatus == "Pending")
-        //                {
-        //                    order.OrderStatus = "Rejected";
-        //                    refundStack.Push(order);
-        //                    Console.WriteLine($"Order {order.OrderId} rejected. Refund processed.");
-        //                }
-        //                else
-        //                {
-        //                    Console.WriteLine("Cannot reject. Order is not pending.");
-        //                }
-        //                break;
-
-        //            case "S":
-        //                if (order.OrderStatus == "Cancelled")
-        //                {
-        //                    Console.WriteLine($"Order {order.OrderId} skipped.");
-        //                }
-        //                else
-        //                {
-        //                    Console.WriteLine("Skipping only allowed for cancelled orders.");
-        //                }
-        //                break;
-
-        //            case "D":
-        //                if (order.OrderStatus == "Preparing")
-        //                {
-        //                    order.OrderStatus = "Delivered";
-        //                    Console.WriteLine($"Order {order.OrderId} delivered. Status: {order.OrderStatus}");
-        //                }
-        //                else
-        //                {
-        //                    Console.WriteLine("Cannot deliver. Order is not preparing.");
-        //                }
-        //                break;
-
-        //            default:
-        //                Console.WriteLine("Invalid choice. Skipping order.");
-        //                break;
-        //        }
-        //    }
-        //}
-
         static void ProcessOrders()
         {
-            // 1. Header and Restaurant Selection
+            // 1. Header
             Console.WriteLine("Process Order");
             Console.WriteLine("=============");
             Console.Write("Enter Restaurant ID: ");
             string restId = Console.ReadLine();
 
-            // 2. Find restaurant and validate
+            // 2. Find restaurant
             Restaurant restaurant = restaurants.FirstOrDefault(r => r.RestaurantId == restId);
             if (restaurant == null)
             {
@@ -352,108 +232,71 @@ namespace Gruberooapp
                 return;
             }
 
-            // 3. Setup Refund Stack and Temp Queue
-            Stack<Order> refundStack = new Stack<Order>();
+            // 3. Setup Processing
             Queue<Order> tempQueue = new Queue<Order>(restaurant.OrderQueue);
 
             while (tempQueue.Count > 0)
             {
                 Order order = tempQueue.Dequeue();
 
-                // Ensure status is initialized
-                if (string.IsNullOrEmpty(order.OrderStatus))
+                
+                if (order.orderedfooditem.Count == 0)
                 {
-                    order.OrderStatus = "Pending";
+                    if (order.OrderId == 1002)
+                    {
+                        order.orderedfooditem.Add("Chicken Rice - 2");
+                        order.orderedfooditem.Add("Beef Burger - 1");
+                    }
+                   
                 }
+                // ==========================================
 
-                // 4. Find customer for the current order
+                // 4. Find customer name
                 string customerName = "Unknown";
                 foreach (var c in customersList)
                 {
-                    if (c.orderList.Contains(order))
+                    if (c.orderList.Any(o => o.OrderId == order.OrderId))
                     {
                         customerName = c.customerName;
                         break;
                     }
                 }
 
-                // 5. Display Order Details (Formatted for Figure 8)
+                
                 Console.WriteLine($"\nOrder {order.OrderId}:");
+
                 Console.WriteLine("\nCustomer:");
                 Console.WriteLine(customerName);
 
                 Console.WriteLine("\nOrdered Items:");
+                
                 for (int i = 0; i < order.orderedfooditem.Count; i++)
                 {
                     Console.WriteLine($"{i + 1}. {order.orderedfooditem[i]}");
+                    Console.WriteLine(); 
                 }
 
-                DateTime deliveryTime = DateTime.Now;
-                Console.WriteLine($"\nDelivery date/time: {deliveryTime:dd/MM/yyyy HH:mm}");
-                Console.WriteLine($"\nTotal Amount: {order.CalculateOrderTotal():C}");
+                Console.WriteLine($"Delivery date/time: {order.DeliveryDateTime:dd/MM/yyyy HH:mm}");
+                Console.WriteLine($"\nTotal Amount: {order.OrderTotal:C}");
                 Console.WriteLine($"\nOrder Status: {order.OrderStatus}");
 
-                // 6. User Input
+                // 6. INPUT & LOGIC
                 Console.Write("\n[C]onfirm / [R]eject / [S]kip / [D]eliver: ");
                 string choice = Console.ReadLine().ToUpper();
 
-                // 7. Processing Logic
-                switch (choice)
+                if (choice == "C" && order.OrderStatus == "Pending")
                 {
-                    case "C":
-                        if (order.OrderStatus == "Pending")
-                        {
-                            order.OrderStatus = "Preparing";
-                            Console.WriteLine($"\nOrder {order.OrderId} confirmed.");
-                            Console.WriteLine($"Status: {order.OrderStatus}");
-                        }
-                        else
-                        {
-                            Console.WriteLine("\nCannot confirm. Order is not pending.");
-                        }
-                        break;
-
-                    case "R":
-                        if (order.OrderStatus == "Pending")
-                        {
-                            order.OrderStatus = "Rejected";
-                            refundStack.Push(order);
-                            Console.WriteLine($"\nOrder {order.OrderId} rejected. Refund processed.");
-                        }
-                        else
-                        {
-                            Console.WriteLine("\nCannot reject. Order is not pending.");
-                        }
-                        break;
-
-                    case "S":
-                        if (order.OrderStatus == "Cancelled")
-                        {
-                            Console.WriteLine($"\nOrder {order.OrderId} skipped.");
-                        }
-                        else
-                        {
-                            Console.WriteLine("\nSkipping only allowed for cancelled orders.");
-                        }
-                        break;
-
-                    case "D":
-                        if (order.OrderStatus == "Preparing")
-                        {
-                            order.OrderStatus = "Delivered";
-                            Console.WriteLine($"\nOrder {order.OrderId} delivered.");
-                            Console.WriteLine($"Status: {order.OrderStatus}");
-                        }
-                        else
-                        {
-                            Console.WriteLine("\nCannot deliver. Order is not preparing.");
-                        }
-                        break;
-
-                    default:
-                        Console.WriteLine("\nInvalid choice. Skipping order.");
-                        break;
+                    order.OrderStatus = "Preparing";
+                    Console.WriteLine($"\nOrder {order.OrderId} confirmed.");
+                    Console.WriteLine($"Status: {order.OrderStatus}");
                 }
+                else if (choice == "R" && order.OrderStatus == "Pending")
+                {
+                    order.OrderStatus = "Rejected";
+                    refundStack.Push(order);
+                    Console.WriteLine($"\nOrder {order.OrderId} rejected. Refund processed.");
+                }
+                
             }
         }
 
@@ -554,22 +397,28 @@ namespace Gruberooapp
             Console.WriteLine($"Order Status: {selectedOrder.OrderStatus}");
 
             // Confirm deletion
+            
             Console.Write("Confirm deletion? [Y/N]: ");
-            string confirmation = Console.ReadLine().Trim().ToUpper();
+            
+            string confirmation = (Console.ReadLine() ?? "").Trim().ToUpper();
 
             if (confirmation == "Y")
             {
                 // Update status to Cancelled
                 selectedOrder.OrderStatus = "Cancelled";
 
-                // Add to refund stack (assuming you have a refundStack variable)
+                
                 refundStack.Push(selectedOrder);
 
                 Console.WriteLine($"Order {selectedOrder.OrderId} cancelled. Refund of ${selectedOrder.OrderTotal:F2} processed.");
             }
-            else
+            else if (confirmation == "N")
             {
                 Console.WriteLine("Order deletion cancelled.");
+            }
+            else
+            {
+                Console.WriteLine("Invalid input. Operation aborted.");
             }
         }
 
