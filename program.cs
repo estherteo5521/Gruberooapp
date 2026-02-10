@@ -42,7 +42,7 @@ namespace Gruberooapp
         //==========================================================
         static void LoadRestaurants()
         {
-            // Skip(1) removes the header, Take(16) limits the results to the first 16 data rows
+            
             var lines = File.ReadAllLines("restaurants.csv").Skip(1).Take(16);
 
             foreach (var line in lines)
@@ -265,7 +265,7 @@ namespace Gruberooapp
                     Console.WriteLine($"{i + 1}. {order.orderedfooditem[i]}");
                 }
 
-                DateTime deliveryTime = DateTime.Now; // student version
+                DateTime deliveryTime = DateTime.Now; 
                 Console.WriteLine($"Delivery date/time: {deliveryTime:dd/MM/yyyy HH:mm}");
                 Console.WriteLine($"Total Amount: {order.CalculateOrderTotal():C}");
                 Console.WriteLine($"Order Status: {order.OrderStatus}");
