@@ -27,6 +27,7 @@ namespace Gruberooapp
         private List<SpecialOffer> specialOffers = new List<SpecialOffer>();
         private List<Order> orders = new List<Order>();
         public Queue<Order> OrderQueue { get; set; } = new Queue<Order>();
+        public List<Restaurant> restaurantlist = new List<Restaurant>();
 
         public Restaurant(string restid, string restname, string restemail)
         {
