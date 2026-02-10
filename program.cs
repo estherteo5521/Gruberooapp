@@ -269,7 +269,7 @@ namespace Gruberooapp
                 Console.WriteLine($"Total Amount: {order.OrderTotal:C}");
                 Console.WriteLine($"Order Status: {order.OrderStatus}");
 
-                // Prompt for action
+                
                 Console.Write("\n[C]onfirm / [R]eject / [S]kip / [D]eliver: ");
                 string choice = (Console.ReadLine() ?? "").Trim().ToUpper();
 
@@ -451,6 +451,190 @@ namespace Gruberooapp
             }
         }
 
+        //================Advanced Feature B=============================
+        //==========================================================
+        // Student Number : S10275496C
+        // Student Name : Esther Teo
+        // Partner Name : Yap Jia Xuan 
+        //==========================================================
+        static void DisplayTotalOrderAmount()
+        {
+            Console.WriteLine("\nFinancial Summary Report");
+            Console.WriteLine("========================");
+
+            double grandTotalOrders = 0;
+            double grandTotalRefunds = 0;
+            const double DELIVERY_FEE = 5.00;
+
+            foreach (Restaurant rest in restaurants)
+            {
+                double restaurantOrderTotal = 0;
+                double restaurantRefundTotal = 0;
+
+
+                foreach (Order order in orderList)
+                {
+
+                    bool isRestOrder = rest.OrderQueue.Any(o => o.OrderId == order.OrderId);
+
+                    if (isRestOrder)
+                    {
+                        if (order.OrderStatus == "Delivered")
+                        {
+
+                            restaurantOrderTotal += (order.OrderTotal - DELIVERY_FEE);
+                        }
+                        else if (order.OrderStatus == "Rejected" || order.OrderStatus == "Cancelled")
+                        {
+
+                            restaurantRefundTotal += order.OrderTotal;
+                        }
+                    }
+                }
+
+                Console.WriteLine($"Restaurant: {rest.RestaurantName,-20}");
+                Console.WriteLine($"  - Total Successful Orders (less fees): ${restaurantOrderTotal:F2}");
+                Console.WriteLine($"  - Total Refunds:                       ${restaurantRefundTotal:F2}");
+                Console.WriteLine();
+
+                grandTotalOrders += restaurantOrderTotal;
+                grandTotalRefunds += restaurantRefundTotal;
+            }
+
+            double finalEarnings = grandTotalOrders - grandTotalRefunds;
+
+            Console.WriteLine("-------------------------------------------");
+            Console.WriteLine($"Total Order Amount (All): ${grandTotalOrders:F2}");
+            Console.WriteLine($"Total Refunds (All):      ${grandTotalRefunds:F2}");
+            Console.WriteLine($"Final Gruberoo Earnings:  ${finalEarnings:F2}");
+            Console.WriteLine("-------------------------------------------");
+        }
+
+        //================Advanced Feature C=============================
+        //==========================================================
+        // Student Number : S10275496C
+        // Student Name : Esther Teo
+        // Partner Name : Yap Jia Xuan 
+        //==========================================================
+
+        static void CreateOrderWithSpecialOffer()
+        {
+            Console.WriteLine("Create New Order (Special Offer)");
+            Console.WriteLine("=============================== ");
+
+
+            Console.Write("Enter Customer Email: ");
+            string email = Console.ReadLine();
+            Customer customer = customersList.Find(c => c.emailAddress == email);
+            if (customer == null)
+            {
+                Console.WriteLine("Customer not found.");
+                return;
+            }
+
+
+            Console.Write("Enter Restaurant ID: ");
+            string resId = Console.ReadLine();
+            Restaurant restaurant = restaurants.Find(r => r.RestaurantId == resId);
+            if (restaurant == null)
+            {
+                Console.WriteLine("Restaurant not found.");
+                return;
+            }
+
+
+
+            restaurant.Menu.Clear();
+            string[] foodLines = File.ReadAllLines("fooditems.csv");
+            for (int i = 1; i < foodLines.Length; i++)
+            {
+                string[] data = foodLines[i].Split(',');
+                if (data[0] == resId)
+                {
+                    string name = data[1];
+                    string desc = data[2];
+                    double price = double.Parse(data[3]);
+                    restaurant.Menu.Add(new OrderFoodItem(name, desc, price, " ", 0, 0.0));
+                }
+            }
+            // -------------------------------------------------------
+
+            if (restaurant.Menu.Count == 0)
+            {
+                Console.WriteLine("This restaurant currently has no items available.");
+                return;
+            }
+
+
+            Console.WriteLine("\nAvailable Food Items:");
+            for (int i = 0; i < restaurant.Menu.Count; i++)
+            {
+                var item = restaurant.Menu[i];
+                Console.WriteLine($"{i + 1}. {item.itemName} - ${item.itemPrice:F2}");
+            }
+
+            double subtotal = 0;
+            List<string> itemNames = new List<string>();
+
+            while (true)
+            {
+                Console.Write("Enter item number (0 to finish): ");
+                string input = Console.ReadLine();
+                if (input == "0" || string.IsNullOrEmpty(input)) break;
+
+                if (int.TryParse(input, out int choice) && choice > 0 && choice <= restaurant.Menu.Count)
+                {
+                    Console.Write("Enter quantity: ");
+                    int qty = int.Parse(Console.ReadLine());
+
+                    var foodItem = restaurant.Menu[choice - 1];
+                    subtotal += (foodItem.itemPrice * qty);
+                    itemNames.Add($"{foodItem.itemName} x{qty}");
+                }
+                else
+                {
+                    Console.WriteLine("Invalid selection.");
+                }
+            }
+
+            if (subtotal == 0) return;
+
+
+            double discountRate = 0.0;
+            Console.Write("\nEnter Promo Code (SAVE10 / GRUB20) or press Enter to skip: ");
+            string promo = Console.ReadLine().ToUpper();
+
+            if (promo == "SAVE10") discountRate = 0.10;
+            else if (promo == "GRUB20") discountRate = 0.20;
+
+
+            double discountAmount = subtotal * discountRate;
+            double finalTotal = (subtotal - discountAmount) + 5.00;
+
+
+            Console.WriteLine("\n--- Order Summary ---");
+            Console.WriteLine($"Original Subtotal: ${subtotal:F2}");
+            if (discountRate > 0) Console.WriteLine($"Discount ({discountRate * 100}%): -${discountAmount:F2}");
+            Console.WriteLine($"Delivery Fee:      $5.00");
+            Console.WriteLine($"Total to Pay:      ${finalTotal:F2}");
+
+
+            Console.Write("\nConfirm and Pay? [Y/N]: ");
+            if (Console.ReadLine().ToUpper() == "Y")
+            {
+                int newID = new Random().Next(1000, 9999);
+                Order newOrder = new Order(newID, DateTime.Now, finalTotal, "Pending", DateTime.Now.AddHours(1), "Delivery Address", "CC", true);
+
+                foreach (string name in itemNames)
+                    newOrder.AddOrderedFoodItem(name);
+
+                customer.AddOrder(newOrder);
+                restaurant.OrderQueue.Enqueue(newOrder);
+
+                Console.WriteLine($"Order {newID} created successfully!");
+            }
+        }
+
 
         //==========================================================
         // Student Number : S10275496C
@@ -469,6 +653,10 @@ namespace Gruberooapp
                 Console.WriteLine("4. Process an order");
                 Console.WriteLine("5. Modify an existing order");
                 Console.WriteLine("6. Delete an existing order");
+                Console.WriteLine("7. Display Order Total Amount");
+                Console.WriteLine("8. Create Order With Special Offer");
+                Console.WriteLine("9. Process Bulk Order");
+                Console.WriteLine("10. Add Order to Favourite:");
                 Console.WriteLine("0. Exit");
                 Console.Write("Enter your choice: ");
 
@@ -495,6 +683,19 @@ namespace Gruberooapp
                     case "6":
                         DeleteOrder();
                         break;
+                    case "7":
+                        DisplayTotalOrderAmount();
+                        break;
+                    case "8":
+                        CreateOrderWithSpecialOffer();
+                        break;
+                    case "9":
+                        ProcessBulkOrder();
+                        break;
+                    case "10":
+                        AddToFavourite();
+                        break;
+
                     case "0":
                         Console.WriteLine("Goodbye!");
                         return;
@@ -508,30 +709,27 @@ namespace Gruberooapp
         // Student Name : Yap Jia Xuan 
         // Partner Name : Esther Teo Hui Min
         //==========================================================
-        static void ListAllRestaurantAndMenu(List<Restaurant> restaurants,List<FoodItem> foodItems )
+        static void ListAllRestaurantAndMenu(List<Restaurant> restaurants, List<FoodItem> foodItems)
         {
             string[] lines = File.ReadAllLines("fooditems.csv");
 
             for (int i = 1; i < lines.Length; i++)
             {
                 string[] data = lines[i].Split(',');
-                //string resid= data[0];
                 string itemname = data[1];
                 string itemdesc = data[2];
                 double itemprice = double.Parse(data[3]);
                 string cust = " ";
                 int qty = 0;
                 double subtotal = 0.0;
-            
 
-                FoodItem foodItem = new OrderFoodItem(itemname,itemdesc,itemprice,cust,qty,subtotal);
+
+                FoodItem foodItem = new OrderFoodItem(itemname, itemdesc, itemprice, cust, qty, subtotal);
                 foodItems.Add(foodItem);
             }
 
             Console.WriteLine("All Restaurants and Menu Items");
             Console.WriteLine("============================== ");
-            Console.WriteLine($"Debug: {foodItems.Count}");
-
 
             foreach (var res in restaurants)
             {
@@ -552,8 +750,8 @@ namespace Gruberooapp
         // Student Name : Yap Jia Xuan
         // Partner Name : Esther Teo Hui Min
         //==========================================================
-        static void CreateNewOrder(List<Customer> customerList, List<Restaurant> restaurantlist)
-        {
+       static void CreateNewOrder(List<Customer> customerList, List<Restaurant> restaurantlist)
+            {
             Console.WriteLine("Create New Order");
             Console.WriteLine("================ ");
             Console.WriteLine("Enter Customer Email:");
@@ -565,7 +763,7 @@ namespace Gruberooapp
                 return;
             }
             string[] lines = File.ReadAllLines("restaurants.csv");
-            for (int i = 1; i < lines.Length; i ++)
+            for (int i = 1; i < lines.Length; i++)
             {
                 string[] data = lines[i].Split(',');
                 string restid = data[0];
@@ -582,7 +780,7 @@ namespace Gruberooapp
             if (restaurant == null)
             {
                 Console.WriteLine("Error: Restaurant ID not found.");
-                return; 
+                return;
             }
 
             Console.WriteLine("Enter Delivery Date (dd/mm/yyyy):");
@@ -600,12 +798,12 @@ namespace Gruberooapp
             for (int i = 1; i < line.Length; i++)
             {
                 string[] foodData = line[i].Split(',');
-                string foodRestId = foodData[0]; 
+                string foodRestId = foodData[0];
                 string name = foodData[1];
                 string desc = foodData[2];
                 double price = double.Parse(foodData[3]);
 
-               Restaurant target = restaurantlist.Find(r => r.RestaurantId == foodRestId);
+                Restaurant target = restaurantlist.Find(r => r.RestaurantId == foodRestId);
 
                 if (target != null)
                 {
@@ -631,7 +829,7 @@ namespace Gruberooapp
                 int quantity = int.Parse(Console.ReadLine());
 
                 FoodItem chosen = restaurant.Menu[choice - 1];
-                OrderFoodItem ordered = new OrderFoodItem(chosen.itemName,chosen.itemDesc,chosen.itemPrice," ", quantity, 0.0);
+                OrderFoodItem ordered = new OrderFoodItem(chosen.itemName, chosen.itemDesc, chosen.itemPrice, " ", quantity, 0.0);
                 selecteditem.Add(ordered);
 
                 subtotal += ordered.CalculateSubtotal();
@@ -646,7 +844,7 @@ namespace Gruberooapp
             else if (special == "N")
             {
             }
-            
+
             double totalwithfee = subtotal + 5.00;
             Console.WriteLine($"\nOrder Total: ${subtotal:F2} + $5.00 (delivery) = ${totalwithfee:F2}");
 
@@ -671,12 +869,13 @@ namespace Gruberooapp
                 Console.WriteLine($"Order {newID} created successfully! Status: Pending");
             }
         }
+
         //========================================================== 
         // Student Number : S10272963E
         // Student Name : Yap Jia Xuan 
         // Partner Name : Esther Teo Hui Min
         //==========================================================
-        static void ModifyOrder(List<Customer> customerList,List<Order> orderList)
+        static void ModifyOrder(List<Customer> customerList, List<Order> orderList)
         {
             Console.WriteLine("Modify Order");
             Console.WriteLine("============ ");
@@ -716,7 +915,7 @@ namespace Gruberooapp
             }
 
             Console.WriteLine("Order Items:");
-            //order.DisplayOrderedFoodItem();
+
 
             Console.WriteLine($"Address: {order.DeliveryAddress}");
             Console.WriteLine($"Delivery Date/Time: {order.DeliveryDateTime:dd/MM/yyyy, HH:mm}");
@@ -726,7 +925,7 @@ namespace Gruberooapp
 
             if (choice == "1")
             {
-                ModifyOrder(customerList,orderList);
+                ModifyOrder(customerList, orderList);
             }
             else if (choice == "2")
             {
@@ -744,9 +943,120 @@ namespace Gruberooapp
                 Console.WriteLine($"Order {order.OrderId} updated. New Delivery Time:{newtime}");
             }
 
-            //Console.WriteLine($"Order {order.OrderId} updated. New Delivery Time:{newtime}");
-
         }
+        //================Advanced Feature A=============================
+        // Student Number : S10272963E
+        // Student Name : Yap Jia Xuan 
+        // Partner Name : Esther Teo Hui Min
+        //==========================================================
+        static void ProcessBulkOrder()
+        {
+            Console.WriteLine("\n--- Bulk Processing Pending Order ---");
+            Console.WriteLine("Enter Restaurant ID:");
+            string restaurantid = Console.ReadLine().Trim().ToUpper();
+
+            Restaurant restaurant = restaurants.FirstOrDefault(r => r.RestaurantId.ToUpper() == restaurantid);
+
+            if (restaurant == null)
+            {
+                Console.WriteLine("Restaurant not found!");
+                return;
+            }
+
+            if (restaurant.OrderQueue.Count == 0)
+            {
+                Console.WriteLine("The queue for this restaurant is empty!");
+                return;
+            }
+
+            int totalPending = 0;
+            int accepted = 0;
+            int rejected = 0;
+            int queuestart = restaurant.OrderQueue.Count;
+
+            Queue<Order> tempqueue = new Queue<Order>();
+
+            while (restaurant.OrderQueue.Count > 0)
+            {
+                Order order = restaurant.OrderQueue.Dequeue();
+                if (order.OrderStatus.Equals("Pending", StringComparison.OrdinalIgnoreCase)) //StringComparison.OrdinalIgnoreCase is to ignore the upper/lower case
+                {
+                    totalPending++;
+                    TimeSpan timetodelivery = order.DeliveryDateTime - DateTime.Now; //TimeSpan is data type used to represent time interval;
+                    if (timetodelivery.TotalHours < 1)
+                    {
+                        order.OrderStatus = "Rejected";
+                        rejected++;
+                        refundStack.Push(order);
+                    }
+                    else
+                    {
+                        order.OrderStatus = "Preparing";
+                        accepted++;
+                    }
+                }
+                tempqueue.Enqueue(order);
+            }
+            foreach (Order order in tempqueue)
+            {
+                restaurant.OrderQueue.Enqueue(order);
+            }
+
+            double successrate = totalPending > 0 ? ((double)accepted / totalPending) * 100 : 0;
+            //to explain line 820:
+            //if totalPending > 0  , then perform ((double)accepted / totalPending) * 100 : 0
+            //if totalPending <= 0, set successrate = 0;
+            // part after "?" represent Condition = YES;
+            //part after ":" represent Condition = NO'
+
+            Console.WriteLine($"\nBulk Processing Summary for {restaurant.RestaurantName}:");
+            Console.WriteLine("--------------------------------------------------");
+            Console.WriteLine($"Total Orders in Queue: {queuestart}");
+            Console.WriteLine($"Pending Orders Identified: {totalPending}");
+            Console.WriteLine($"Auto Accepte: {accepted} (Status: Preparing)");
+            Console.WriteLine($"Auto Reject: {rejected} (Status: Rejected)");
+            Console.WriteLine($"Acceptance Rate: {successrate:F2}%");
+            Console.WriteLine("--------------------------------------------------");
+        }
+
+        //================Advanced Feature C =============================
+        // Student Number : S10272963E
+        // Student Name : Yap Jia Xuan 
+        // Partner Name : Esther Teo Hui Min
+        //==========================================================
+        static void AddToFavourite()
+        {
+            Console.WriteLine("Enter Customer Email:");
+            string email = Console.ReadLine();
+            Customer c = customersList.Find(cust => cust.emailAddress == email);
+            if (c == null)
+            {
+                Console.WriteLine("Customer not found!");
+                return;
+            }
+
+            if (c.orderList.Count == 0)
+            {
+                Console.WriteLine("No past favourite order found!");
+                return;
+            }
+
+            Console.WriteLine("\n--- Your Past Orders ---");
+            for (int i = 0; i < c.orderList.Count; i++)
+            {
+                Console.WriteLine($"{i + 1}. Order ID: {c.orderList[i].OrderId} | Date: {c.orderList[i].OrderDateTime:dd/MM/yyyy}");
+            }
+
+            Console.WriteLine("Enter number of the order to favourite:");
+            int num = int.Parse(Console.ReadLine());
+
+            if (num >= 0 && num < c.orderList.Count)
+            {
+                c.favouriteorder.Add(c.orderList[num]);
+                Console.WriteLine("Order successfully added to Favourites!");
+            }
+        }
+
     }
 }
 
