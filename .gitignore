@@ -2,7 +2,26 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/.vs
-/.vs/Gruberooapp
-/obj
-/bin/Debug/net8.0
+/.vs/Gruberooapp/FileContentIndex
+/.vs/Gruberooapp/v17/.suo
+.vs/
+/obj/Debug/net8.0/ref/Gruberooapp.dll
+/obj/Debug/net8.0/refint/Gruberooapp.dll
+/obj/Debug/net8.0/apphost.exe
+/obj/Debug/net8.0/Gruberooapp.AssemblyInfo.cs
+/bin/Debug/net8.0/Gruberooapp.dll
+/.vs/Gruberooapp/v17/DocumentLayout.backup.json
+/.vs/Gruberooapp/v17/.suo
+/bin/Debug/net8.0/Gruberooapp.exe
+/bin/Debug/net8.0/Gruberooapp.pdb
+/obj/Debug/net8.0/Gruberooapp.AssemblyInfoInputs.cache
+/obj/Debug/net8.0/Gruberooapp.sourcelink.json
+/obj/Debug/net8.0/Gruberooapp.pdb
+/obj/Debug/net8.0/Gruberooapp.dll
+/.vs/Gruberooapp/v17/DocumentLayout.json
+/.vs/Gruberooapp/CopilotIndices/17.14.1347.20289/CodeChunks.db
+/.vs/Gruberooapp/CopilotIndices/17.14.1347.20289/SemanticSymbols.db
+/.vs/ProjectEvaluation/gruberooapp.metadata.v9.bin
+/.vs/ProjectEvaluation/gruberooapp.projects.v9.bin
+/.vs/ProjectEvaluation/gruberooapp.strings.v9.bin
+/.vs/Gruberooapp/DesignTimeBuild/.dtbcache.v2

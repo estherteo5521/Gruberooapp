@@ -1,3 +1,11 @@
+# Visual Studio temporary files (Fixes the "Permission Denied" error)
 .vs/
-[Bb]in/
-[Oo]bj/
+
+# Build output folders
+bin/
+obj/
+
+# User-specific settings
+*.user
+*.suo
+

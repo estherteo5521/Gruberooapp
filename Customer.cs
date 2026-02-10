@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Gruberooapp
 {
-    internal class Customer
+    public class Customer
     {
         //public propeties
         public string emailAddress {  get; set; }
@@ -19,8 +19,7 @@ namespace Gruberooapp
         
 
         //create list for orderlist
-        public List<Order> orderlist = new List<Order>();
-
+        public List<Order> orderList { get; set; } = new List<Order>();
         //constructor
         public Customer (string custname, string custemail)
         {
