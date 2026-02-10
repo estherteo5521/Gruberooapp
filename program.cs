@@ -92,7 +92,7 @@ namespace Gruberooapp
             for (int i = 1; i < customerLines.Length; i++)
             {
                 string[] data = customerLines[i].Split(',');
-                Customer c = new Customer(data[1].Trim(), data[0].Trim());
+                Customer c = new Customer(data[0].Trim(), data[1].Trim());
                 customerList.Add(c);
             }
         }

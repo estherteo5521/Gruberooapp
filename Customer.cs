@@ -20,7 +20,7 @@ namespace Gruberooapp
         //create list for orderlist
         public List<Order> orderList { get; set; } = new List<Order>();
         //constructor
-        public Customer (string custemail, string custname)
+        public Customer (string custname, string custemail)
         {
             emailAddress = custemail;
             customerName = custname;
