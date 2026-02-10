@@ -17,7 +17,7 @@ namespace Gruberooapp
         public string MenuId { get; set; }
         public string MenuName { get; set; }
 
-        private List<FoodItem> foodItems = new List<FoodItem>();
+        public List<FoodItem> foodItems = new List<FoodItem>();
 
         public Menu(string id, string name)
         {
