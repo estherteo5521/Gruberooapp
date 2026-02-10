@@ -2,6 +2,16 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
+
+/.vs
+/obj
+/obj/Debug/net8.0/Gruberooapp.GeneratedMSBuildEditorConfig.editorconfig
+/obj/Debug/net8.0/Gruberooapp.AssemblyInfo.cs
+/obj/Debug/net8.0/Gruberooapp.AssemblyInfoInputs.cache
+/obj/Release/net8.0/Gruberooapp.AssemblyInfo.cs
+/obj/Release/net8.0/Gruberooapp.AssemblyInfoInputs.cache
+/obj/Release/net8.0/Gruberooapp.GeneratedMSBuildEditorConfig.editorconfig
+/bin/Debug/net8.0
 /.vs/Gruberooapp/FileContentIndex
 /.vs/Gruberooapp/v17/.suo
 .vs/
@@ -25,8 +35,20 @@
 /.vs/ProjectEvaluation/gruberooapp.projects.v9.bin
 /.vs/ProjectEvaluation/gruberooapp.strings.v9.bin
 /.vs/Gruberooapp/DesignTimeBuild/.dtbcache.v2
+<<<<<<< HEAD
 /.vs/Gruberooapp/FileContentIndex/78c9c84c-5aa1-42e2-9925-73740c04f02a.vsidx
 /.vs/Gruberooapp/FileContentIndex/80389459-b567-4487-b33e-187f7137c00c.vsidx
 /.vs/Gruberooapp/FileContentIndex/87ca41e2-1769-4236-90d5-2eaa70829042.vsidx
 /.vs/Gruberooapp/v17/.futdcache.v2
 /program.cs
+=======
+
+>>>>>>> 41179d7f1c18aef02122ef1063e192e08ae56869
+/obj/Release/net8.0/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs
+/obj/Release/net8.0/Gruberooapp.AssemblyInfo.cs
+/obj/Release/net8.0/Gruberooapp.GeneratedMSBuildEditorConfig.editorconfig
+/obj/Release/net8.0/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs
+/obj/Release/net8.0/Gruberooapp.AssemblyInfoInputs.cache
+/obj/Debug/net8.0/Gruberooapp.AssemblyInfoInputs.cache
+/obj/Debug/net8.0/Gruberooapp.AssemblyInfo.cs
+/obj/Debug/net8.0/Gruberooapp.GlobalUsings.g.cs
