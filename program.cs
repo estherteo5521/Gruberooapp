@@ -246,7 +246,7 @@ namespace Gruberooapp
                     order.orderedfooditem.Add("Beef Burger - 1");
                 }
 
-                // --- DATA RETRIEVAL: Find the customer linked to this order ---
+                
                 var customer = customersList.FirstOrDefault(c => c.orderList.Any(o => o.OrderId == order.OrderId));
 
                 string name = customer?.customerName ?? "Unknown";
