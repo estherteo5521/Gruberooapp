@@ -210,16 +210,16 @@ namespace Gruberooapp
         // Student Name : Esther Teo
         // Partner Name : Yap Jia Xuan 
         //==========================================================
+
         static void ProcessOrders()
         {
-            // 1. Header
             Console.WriteLine("Process Order");
             Console.WriteLine("=============");
             Console.Write("Enter Restaurant ID: ");
             string restId = Console.ReadLine();
 
-            // 2. Find restaurant
             Restaurant restaurant = restaurants.FirstOrDefault(r => r.RestaurantId == restId);
+
             if (restaurant == null)
             {
                 Console.WriteLine("Restaurant not found.");
@@ -228,11 +228,11 @@ namespace Gruberooapp
 
             if (restaurant.OrderQueue.Count == 0)
             {
-                Console.WriteLine("No orders in queue for this restaurant.");
+                Console.WriteLine("No orders in queue.");
                 return;
             }
 
-            // 3. Setup Processing
+            
             Queue<Order> tempQueue = new Queue<Order>(restaurant.OrderQueue);
 
             while (tempQueue.Count > 0)
@@ -242,64 +242,62 @@ namespace Gruberooapp
                 
                 if (order.orderedfooditem.Count == 0)
                 {
-                    if (order.OrderId == 1002)
-                    {
-                        order.orderedfooditem.Add("Chicken Rice - 2");
-                        order.orderedfooditem.Add("Beef Burger - 1");
-                    }
-                   
-                }
-                // ==========================================
-
-                // 4. Find customer name
-                string customerName = "Unknown";
-                foreach (var c in customersList)
-                {
-                    if (c.orderList.Any(o => o.OrderId == order.OrderId))
-                    {
-                        customerName = c.customerName;
-                        break;
-                    }
+                    order.orderedfooditem.Add("Chicken Rice - 2");
+                    order.orderedfooditem.Add("Beef Burger - 1");
                 }
 
-                
+                // --- DATA RETRIEVAL: Find the customer linked to this order ---
+                var customer = customersList.FirstOrDefault(c => c.orderList.Any(o => o.OrderId == order.OrderId));
+
+                string name = customer?.customerName ?? "Unknown";
+                string address = order.DeliveryAddress ?? "No Address Found"; ;
+
+               
                 Console.WriteLine($"\nOrder {order.OrderId}:");
-
-                Console.WriteLine("\nCustomer:");
-                Console.WriteLine(customerName);
+                Console.WriteLine($"\nCustomer:\n{name}");
+                Console.WriteLine($"\nDelivery Address:\n{address}");
 
                 Console.WriteLine("\nOrdered Items:");
-                
                 for (int i = 0; i < order.orderedfooditem.Count; i++)
                 {
                     Console.WriteLine($"{i + 1}. {order.orderedfooditem[i]}");
-                    Console.WriteLine(); 
+                    Console.WriteLine(); // Spacing
                 }
 
                 Console.WriteLine($"Delivery date/time: {order.DeliveryDateTime:dd/MM/yyyy HH:mm}");
                 Console.WriteLine($"\nTotal Amount: {order.OrderTotal:C}");
                 Console.WriteLine($"\nOrder Status: {order.OrderStatus}");
 
-                // 6. INPUT & LOGIC
+                
                 Console.Write("\n[C]onfirm / [R]eject / [S]kip / [D]eliver: ");
                 string choice = Console.ReadLine().ToUpper();
 
                 if (choice == "C" && order.OrderStatus == "Pending")
                 {
                     order.OrderStatus = "Preparing";
-                    Console.WriteLine($"\nOrder {order.OrderId} confirmed.");
-                    Console.WriteLine($"Status: {order.OrderStatus}");
+                    Console.WriteLine($"\nOrder {order.OrderId} confirmed and is now 'Preparing'.");
                 }
                 else if (choice == "R" && order.OrderStatus == "Pending")
                 {
                     order.OrderStatus = "Rejected";
-                    refundStack.Push(order);
+                    refundStack.Push(order); 
                     Console.WriteLine($"\nOrder {order.OrderId} rejected. Refund processed.");
                 }
-                
+                else if (choice == "D" && order.OrderStatus == "Preparing")
+                {
+                    order.OrderStatus = "Delivered";
+                    Console.WriteLine($"\nOrder {order.OrderId} has been successfully delivered.");
+                }
+                else if (choice == "S")
+                {
+                    Console.WriteLine("\nOrder skipped.");
+                }
+                else
+                {
+                    Console.WriteLine("\nInvalid action for the current order status.");
+                }
             }
         }
-
 
 
         //==========================================================
@@ -396,7 +394,7 @@ namespace Gruberooapp
             Console.WriteLine($"Total Amount: ${selectedOrder.OrderTotal:F2}");
             Console.WriteLine($"Order Status: {selectedOrder.OrderStatus}");
 
-            // Confirm deletion
+            
             
             Console.Write("Confirm deletion? [Y/N]: ");
             
@@ -421,6 +419,7 @@ namespace Gruberooapp
                 Console.WriteLine("Invalid input. Operation aborted.");
             }
         }
+
 
         //==========================================================
         // Student Number : S10275496C
